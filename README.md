@@ -1,87 +1,81 @@
-### The `useRef` Hook
-- **Purpose**: The `useRef` hook provides a way to create a mutable reference that persists across renders without causing the component to update. It is primarily used for two main cases: accessing DOM elements directly and storing mutable values that don't trigger a re-render when they change.
-- **Comparison to `useState`**: While `useState` is used to manage values that, when changed, cause a re-render, `useRef` allows you to hold a value that can be changed imperatively without triggering a re-render. It tracks the object itself rather than its value.
-- **Basic Syntax**: The hook returns a mutable ref object whose `.current` property is initialized to the passed argument (`initialValue`). This object persists for the full lifetime of the component.
-    ```jsx
-    import React, { useRef } from 'react';
+<details>
+<summary>ENG (English Version)</summary>
 
-    const refContainer = useRef(initialValue);
-    // You can access or modify the value with refContainer.current
-    ```
+## **React useRef Hook**
 
-### Accessing DOM Elements
-- **Use Case**: The most common use for `useRef` is to get direct access to a DOM node. This allows you to perform imperative actions like managing focus, triggering animations, or integrating with third-party DOM libraries.
-- **Implementation**: You attach the ref object to a DOM element via the `ref` attribute. React will set the `.current` property of the ref object to the corresponding DOM node when the component mounts.
-    ```jsx
-    function FocusInput() {
-      // 1. Create a ref object
-      const inputRef = useRef(null);
+**Purpose**: Mutable reference persisting across renders **without re-rendering**; DOM access + internal state storage.
 
-      const handleFocus = () => {
-        // 3. Access the DOM node and call its methods
-        inputRef.current.focus();
-      };
+**vs useState**
+```
+useState: value changes → re-render
+useRef:  ref.current changes → NO re-render
+```
 
-      return (
-        <div>
-          {/* 2. Attach the ref to the input element */}
-          <input type="text" ref={inputRef} />
-          <button onClick={handleFocus}>Focus the input</button>
-        </div>
-      );
-    }
-    ```
-- **Controlling Focus**: While the HTML `autoFocus` attribute works for the initial render, `useRef` is necessary for programmatically controlling focus in response to events (e.g., focusing an input after an invalid submission). You can also replicate `autoFocus` behavior using a `useEffect` hook with an empty dependency array.
-    ```jsx
-    // Set focus when the component first mounts
-    useEffect(() => {
-      idRef.current.focus();
-    }, []);
-    ```
+**DOM Access**
+```jsx
+const inputRef = useRef(null);
+<input ref={inputRef} />
+inputRef.current.focus();  // Programmatic focus/scroll/measure
+```
 
-### Storing Mutable Values
-- **Purpose**: `useRef` can be used as an instance variable to hold any mutable value that you want to persist across renders without causing a re-render. This is useful for storing information like timer IDs, previous state values, or flags.
-- **No Re-render**: Modifying the `.current` property of a ref does not trigger a component update. This makes it ideal for values that are part of the component's internal logic but don't directly affect the rendered output.
-    ```jsx
-    function Timer() {
-      const intervalRef = useRef(null);
+**Mutable Storage**
+```jsx
+const timerRef = useRef(null);
+timerRef.current = setInterval(...);  // Store IDs/flags
+return () => clearInterval(timerRef.current);
+```
 
-      useEffect(() => {
-        // Store the interval ID in the ref
-        intervalRef.current = setInterval(() => {
-          console.log('Timer tick');
-        }, 1000);
+**Multi-Input Forms**
+```jsx
+const [formData, setFormData] = useState({id:'', pw:''});
+const handleChange = (e) => {
+  const {name, value} = e.target;
+  setFormData({...formData, [name]: value});
+};
+// Single handler for all inputs via `name` attribute
+```
 
-        // Cleanup on unmount
-        return () => {
-          clearInterval(intervalRef.current);
-        };
-      }, []);
+**Key Use Cases**: Focus control, timer IDs, previous values, DOM measurements.
 
-      // ...
-    }
-    ```
+</details>
 
-### Handling Multiple Form Inputs
-- **Use Case**: When dealing with forms that have multiple input fields, it is more efficient to manage the form's state in a single object rather than using `useState` for each field.
-- **Generic `handleChange`**: A single event handler can be created to manage all inputs. It uses the `name` attribute of the input element (`event.target.name`) to identify which field is being updated and dynamically updates the corresponding key in the state object.
-    ```jsx
-    function LoginForm() {
-      const [formValues, setFormValues] = useState({ id: '', password: '' });
+<details>
+<summary>KOR (한국어 버전)</summary>
 
-      const handleChange = (event) => {
-        const { name, value } = event.target;
-        setFormValues(prevValues => ({
-          ...prevValues,
-          [name]: value
-        }));
-      };
+## **React useRef 훅**
 
-      return (
-        <form>
-          <input name="id" value={formValues.id} onChange={handleChange} />
-          <input name="password" value={formValues.password} onChange={handleChange} />
-        </form>
-      );
-    }
-    ```
+**목적**: 렌더링 간 **변경가능 참조** (리렌더링 **없이**); DOM 접근 + 내부 상태 저장.
+
+**vs useState**
+```
+useState: 값 변경 → 리렌더링
+useRef:  ref.current 변경 → 리렌더링 없음
+```
+
+**DOM 접근**
+```jsx
+const inputRef = useRef(null);
+<input ref={inputRef} />
+inputRef.current.focus();  // 포커스/스크롤/측정
+```
+
+**가변 저장**
+```jsx
+const timerRef = useRef(null);
+timerRef.current = setInterval(...);  // ID/플래그 저장
+return () => clearInterval(timerRef.current);
+```
+
+**다중 입력 폼**
+```jsx
+const [formData, setFormData] = useState({id:'', pw:''});
+const handleChange = (e) => {
+  const {name, value} = e.target;
+  setFormData({...formData, [name]: value});
+};
+// `name` 속성으로 모든 입력 하나의 핸들러
+```
+
+**주요 용도**: 포커스 제어, 타이머 ID, 이전값, DOM 측정.
+
+</details>
