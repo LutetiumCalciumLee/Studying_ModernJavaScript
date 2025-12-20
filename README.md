@@ -1,7 +1,7 @@
 <details>
 <summary>ENG (English Version)</summary>
 
-## **Modern JavaScript**
+## **Modern JavaScript 1**
 
 **Overview**: ES6+ features and tooling ecosystem for React/Vue/Angular; emphasizes functional patterns and immutability with package managers, bundlers, transpilers.
 
@@ -33,7 +33,7 @@ data.map(x => x.score + 10)  // Transform
 <details>
 <summary>KOR (한국어 버전)</summary>
 
-## **현대 자바스크립트**
+## **모던 자바스크립트 1**
 
 **개요**: ES6+ 기능 + React/Vue/Angular 도구 생태계; 함수형 패턴과 불변성 강조.
 
