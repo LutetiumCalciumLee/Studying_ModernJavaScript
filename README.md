@@ -1,49 +1,63 @@
-# Modern JavaScript
+<details>
+<summary>ENG (English Version)</summary>
 
-## Overview
-- Modern JavaScript refers to ES6+ features and the surrounding tooling ecosystem used with frameworks like React, Vue, and Angular.  
-- Core ideas include functional patterns and immutable updates, supported by tools such as package managers, bundlers, and transpilers.  
+## **Modern JavaScript**
 
-## Variables and Scope
-- Prefer let/const over var due to block scope and safer behavior.  
-- const prevents reassignment but still allows mutation of object/array contents; let allows reassignment.  
+**Overview**: ES6+ features and tooling ecosystem for React/Vue/Angular; emphasizes functional patterns and immutability with package managers, bundlers, transpilers.
 
-## Hoisting and TDZ
-- var is hoisted and initialized to undefined, enabling access before declaration.  
-- let/const are hoisted but not initialized (Temporal Dead Zone), causing ReferenceError if accessed early.  
+### **Variables & Scope**
+- **let/const** over **var**: Block-scoped, safer; **const** prevents reassignment (mutable contents), **let** allows reassignment.
 
-## Template Literals
-- Use backticks and ${} for string interpolation and embedding expressions, improving readability over + concatenation.  
+### **Hoisting & TDZ**
+- **var**: Hoisted + initialized (undefined), accessible pre-declaration.
+- **let/const**: Hoisted but uninitialized (Temporal Dead Zone/ReferenceError).
 
-## Arrow Functions
-- Concise syntax that can omit function/return when a single expression; parentheses optional for a single parameter.  
-- this is lexically bound, which is useful for callbacks and event handlers.  
+### **Key ES6+ Features**
+- **Template Literals**: `` `Hello ${name}` `` for interpolation.
+- **Arrow Functions**: `() => value`; lexical `this` binding.
+- **Destructuring**: `{name, age} = user`; `[first, ...rest] = array`.
+- **Spread/Rest**: Spread merges/copies; Rest collects args (`...args`).
 
-## Destructuring
-- Extract values from objects/arrays into variables; supports renaming and default values.  
-- Object destructuring is key-based; array destructuring is order-based.  
+### **Array Methods Pipeline**
+```
+data.map(x => x.score + 10)  // Transform
+  .filter(x => x.score >= 80) // Filter
+  .reduce((sum, x) => sum + x.score, 0) // Aggregate
+```
+**Common**: Filter (≥60) → Map (extract names).
 
-## Default Values
-- Provide safe fallbacks in function parameters and destructuring assignments when values are missing.  
+**Core Principle**: Immutable updates via functional methods (map/filter/reduce) + spread operator.
 
-## Spread and Rest (...)
-- Spread expands arrays/objects for merging, shallow copying, and function argument passing.  
-- Rest collects remaining function arguments into an array; must be the last parameter.  
+</details>
 
-## Shallow Copy Caution
-- Assignment (=) copies references, so mutations affect the original.  
-- Spread creates a new shallow copy; deep structures still need explicit deep copy handling.  
+<details>
+<summary>KOR (한국어 버전)</summary>
 
-## Object Shorthand
-- When property names match variable names, use shorthand: const user = { name, age }.  
+## **현대 자바스크립트**
 
-## Array Higher-Order Functions
-- map transforms elements and returns a new array (non-mutating).  
-- filter selects elements that meet a condition.  
-- reduce aggregates elements into a single value (number, string, object), with an initial accumulator.  
+**개요**: ES6+ 기능 + React/Vue/Angular 도구 생태계; 함수형 패턴과 불변성 강조.
 
-## Practice Patterns
-- ES5 → ES6 refactors: var→let/const, string +→template literals, index access→destructuring, Object.assign→spread, arguments loops→rest + reduce.  
-- Typical pipeline: map to adjust values (e.g., score +10) → filter by condition (≥ 80) → reduce to a total.  
-- Common task: filter by score threshold (≥ 60) then map to extract names.
+### **변수 & 스코프**
+- **let/const** 우선: 블록 스코프; **const** 재할당 방지(내용 변경 가능), **let** 재할당 가능.
 
+### **Hoisting & TDZ**
+- **var**: 선언 전 undefined로 초기화.
+- **let/const**: 선언 전 TDZ(ReferenceError).
+
+### **주요 ES6+ 기능**
+- **템플릿 리터럴**: `` `안녕 ${name}` ``.
+- **화살표 함수**: `() => value`; 렉시컬 `this`.
+- **구조 분해**: `{name, age} = user`; `[first, ...rest] = array`.
+- **전개/나머지**: 전개(병합/복사), 나머지(`...args`).
+
+### **배열 메서드 파이프라인**
+```
+data.map(x => x.score + 10)     // 변환
+  .filter(x => x.score >= 80)   // 필터
+  .reduce((sum, x) => sum + x.score, 0) // 집계
+```
+**일반 패턴**: 점수 필터(≥60) → 이름 추출 map.
+
+**핵심 원칙**: map/filter/reduce + 전개 연산자로 불변 업데이트.
+
+</details>
