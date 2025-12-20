@@ -1,124 +1,87 @@
-## JSX (JavaScript + XML)
+<details>
+<summary>ENG (English Version)</summary>
 
-JSX is a syntax extension for JavaScript used in React to describe what the UI should look like. It allows you to write HTML-like code, making it intuitive.
+## **React JSX, Components & Props**
 
-### Key JSX Syntax Features
+**JSX Syntax**
+- **Single Root**: All elements wrapped in one parent (`<div>`).
+- **JS Expressions**: `{variable}` or `{function()}` embeds JS.
+- **Attributes**: `className` (not `class`), `htmlFor` (not `for`).
+- **Comments**: `{/* comment */}`.
 
-*   **Single Root Element**: All JSX elements must be wrapped in a single parent element.
-    ```jsx
-    // Incorrect example
-    // return (
-    //   <h1>Hello</h1>
-    //   <h2>World</h2>
-    // );
+**Styling**
+- **Inline**: `style={{color: 'red', backgroundColor: 'yellow'}}` (camelCase).
+- **CSS**: Import + `className="my-class"`.
 
-    // Correct example
-    return (
-      <div>
-        <h1>Hello</h1>
-        <h2>World</h2>
-      </div>
-    );
-    ```
-*   **Using JavaScript Expressions**: You can embed JavaScript expressions, such as variables or function results, directly into JSX by wrapping them in curly braces `{}`.
-    ```jsx
-    const name = "React";
-    return (
-      <h1>Hello, {name}!</h1>
-    );
-    ```
-*   **Differences from HTML Attributes**: You must use `className` instead of `class` and `htmlFor` instead of `for`.
-    ```jsx
-    <div className="App">
-      <label htmlFor="input">Name:</label>
-      <input id="input" />
-    </div>
-    ```
-*   **Comments**: Comments within JSX are written as `{/* comment content */}`.
+**Conditional Rendering**
+```
+{isLoggedIn ? <Welcome/> : <Login/>}     // Ternary
+{messages.length && <p>{messages.length} unread</p>}  // AND
+{name || 'Guest'}                         // OR fallback
+```
 
-### Applying Styles
+**Components**
+| Type | Modern Choice | Features |
+|------|---------------|----------|
+| **Functional** | ✅ Recommended | `function MyComp({props}) { return <div/>; }` + Hooks |
+| **Class** | ❌ Legacy | `class MyComp extends React.Component` + state/lifecycle |
 
-1.  **Inline Styles**: Styles are applied to the `style` attribute as a JavaScript object. Property names use camelCase.
-    ```jsx
-    <h1 style={{ backgroundColor: "yellow", color: "red" }}>Hello, React!</h1>
-    ```
-2.  **External CSS Files**: You can import a CSS file and apply styles using the `className` attribute.
+**Props (Read-Only Data Flow)**
+```jsx
+// Child
+function UserCard({name, age}) {  // Destructuring
+  return <div>Name: {name}, Age: {age}</div>;
+}
 
-### Conditional Rendering
+// Parent
+<UserCard name="Ann" age={28} />
+<UserCard name="Minsu" age={31} />
+```
 
-This is used to display different UI based on conditions. In JSX, this is typically handled with the ternary operator and logical operators (`&&`, `||`) .
+**Core Benefits**: Reusability, encapsulation, composability.
 
-*   **Ternary Operator**: `condition ? UI_to_show_if_true : UI_to_show_if_false`
-    ```jsx
-    const isLoggedIn = true;
-    return (
-      <div>
-        {isLoggedIn ? <p>Welcome!</p> : <p>Please log in.</p>}
-      </div>
-    );
-    ```
-*   **AND (&&) Operator**: Renders a specific UI element only if the condition is `true`.
-    ```jsx
-    const messages = ['msg1', 'msg2'];
-    return (
-      <div>
-        {messages.length > 0 && <h2>You have {messages.length} unread messages.</h2>}
-      </div>
-    );
-    ```
-*   **OR (||) Operator**: Useful for rendering fallback content, such as showing a default value when data is missing .
-    ```jsx
-    const name = undefined;
-    return (
-      <h2>Hello, {name || 'Guest'}!</h2>
-    );
-    ```
+</details>
 
-## Components
+<details>
+<summary>KOR (한국어 버전)</summary>
 
-Components are independent, reusable building blocks for the UI in React. Using components improves code reusability and simplifies maintenance.
+## **React JSX, 컴포넌트 & Props**
 
-### Component Features
+**JSX 문법**
+- **단일 루트**: 모든 요소 하나의 부모로 감싸기 (`<div>`).
+- **JS 표현식**: `{변수}` 또는 `{함수()}`.
+- **속성**: `className` (class 아님), `htmlFor` (for 아님).
+- **주석**: `{/* 주석 */}`.
 
-*   **Reusability**: Common UI elements like buttons or input fields can be created as components and reused.
-*   **Independence (Encapsulation)**: Logic and styles are managed separately for each component, making maintenance easier.
-*   **Composability**: Smaller components can be combined to create larger, more complex components.
+**스타일링**
+- **인라인**: `style={{color: 'red', backgroundColor: 'yellow'}}` (camelCase).
+- **CSS**: import + `className="my-class"`.
 
-### Types of Components
+**조건부 렌더링**
+```
+{isLoggedIn ? <Welcome/> : <Login/>}     // 삼항
+{messages.length && <p>{messages.length}개 읽지 않음</p>}  // AND
+{name || '손님'}                         // OR 대체값
+```
 
-| Category | Functional Component | Class Component |
-| :--- | :--- | :--- |
-| **Description** | Written as a JavaScript function, this is the recommended approach in modern React . | An ES6 class that extends `React.Component`, commonly used in older versions of React . |
-| **Features** | Accepts `props` as an argument and returns JSX. Can manage state and lifecycle with Hooks (e.g., `useState`, `useEffect`) . | Manages state and complex logic using `state` and lifecycle methods . |
-| **Example** | `function Welcome(props) { return <h1>Hello, {props.name}</h1>; }` | `class Welcome extends React.Component { render() { return <h1>Hello, {this.props.name}</h1>; } }` |
+**컴포넌트**
+| 유형 | 모던 초이스 | 특징 |
+|------|-----------|------|
+| **함수형** | ✅ 권장 | `function MyComp({props})` + Hooks |
+| **클래스** | ❌ 구버전 | `class MyComp extends React.Component` |
 
-## Props
+**Props (읽기 전용 데이터 전달)**
+```jsx
+// 자식
+function UserCard({name, age}) {  // 구조분해
+  return <div>이름: {name}, 나이: {age}</div>;
+}
 
-`Props` (short for properties) are objects used to pass data from a parent component to a child component. Props are **read-only** and cannot be modified directly within the child component .
+// 부모
+<UserCard name="Ann" age={28} />
+<UserCard name="Minsu" age={31} />
+```
 
-**Example Usage:**
-1.  **Child Component (`UserCard.js`)**
-    ```jsx
-    function UserCard(props) {
-      return (
-        <div>
-          <h3>Name: {props.name}</h3>
-          <p>Age: {props.age}</p>
-        </div>
-      );
-    }
-    ```
+**핵심 장점**: 재사용성, 캡슐화, 조합성.
 
-2.  **Parent Component (`App.js`)**
-    ```jsx
-    import UserCard from './UserCard';
-
-    function App() {
-      return (
-        <div>
-          <UserCard name="Ann" age={28} />
-          <UserCard name="Minsu" age={31} />
-        </div>
-      );
-    }
-    ```
+</details>
