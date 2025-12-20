@@ -1,21 +1,75 @@
-## Props and Component Composition
-- **`defaultProps`**: Assign default values to props directly in a component's function signature using destructuring, such as `function Welcome({ name = "Guest" })`. This is a common practice to prevent errors if a parent component does not pass the required prop.
-- **`children` Prop**: A special prop, `props.children`, automatically receives any content placed between a component's opening and closing tags. This pattern is highly effective for creating reusable wrapper components like layouts, cards, or modals.
-- **Prop Destructuring**: Instead of repeatedly accessing props with `props.name` and `props.age`, you can destructure them directly in the function's parameter list for cleaner and more readable code: `function Profile({ name, age })`.
+<details>
+<summary>ENG (English Version)</summary>
 
-## State Management with `useState`
-- **Definition**: State is a JavaScript object managed within a component that holds data that can change over time. When a state value is updated, React automatically re-renders the component to reflect the new data.
-- **Syntax**: The `useState` hook is the standard way to add state to a functional component. It is declared as `const [stateVariable, setStateFunction] = useState(initialValue);`. Calling the `setStateFunction` triggers an update.
-- **Props vs. State**: Props are read-only and are passed down from a parent component. State, however, is managed and can be modified internally by the component itself.
-- **Updating Parent's State**: A child component cannot directly modify its parent's state. The standard pattern is for the parent to pass a function that modifies its own state down to the child as a prop. The child then invokes this function to signal a state change.
+## **React: Props, State, Events & Forms**
 
-## React Event Handling
-- **Handler Syntax**: Event handlers in JSX are written in camelCase (e.g., `onClick`) and are assigned a function reference, not a string or a function call (e.g., `<button onClick={handleClick}>`).
-- **Passing Arguments**: When an event handler needs to receive arguments, it should be wrapped in an arrow function to prevent it from executing on render: `<button onClick={() => handlePurchase('item-1')}>`.
-- **SyntheticEvent Object**: React normalizes the browser's native event into a `SyntheticEvent` object, ensuring consistent behavior across different browsers. Key properties include `e.target` (the DOM element that initiated the event), `e.key`, and `e.preventDefault()`.
+**Props & Composition**
+- **defaultProps**: `{name = "Guest"}` destructuring in params.
+- **children**: `props.children` receives content between tags (layouts/cards).
+- **Destructuring**: `function Profile({name, age})` vs `props.name`.
 
-## Controlled Components for Forms
-- **Concept**: A controlled component is an input form element whose value is controlled by React state. The component's state serves as the "single source of truth" for the input's value.
-- **Implementation**: The input element's `value` attribute is bound to a state variable, and an `onChange` event handler is used to update that state with every change (e.g., keystroke), typically using `e.target.value`.
-- **Managing Multiple Inputs**: To handle multiple form inputs without creating separate state and handler functions for each, you can use a single state object. A unified `handleChange` function can then dynamically update the correct piece of state by using the input's `name` attribute to identify which field is being changed.
+**useState Management**
+```
+const [count, setCount] = useState(0);
+// Props: read-only (parent → child)
+// State: mutable (internal component)
+```
+**Parent State Pattern**: Parent passes `setParentState` as prop to child.
 
+**Event Handling**
+```
+<button onClick={handleClick}>Click</button>  // Function reference
+<button onClick={() => handleClick('arg')}>  // Arrow wrapper
+e.target.value, e.preventDefault()           // SyntheticEvent
+```
+
+**Controlled Forms**
+```
+const [formData, setFormData] = useState({});
+<input 
+  name="email" 
+  value={formData.email} 
+  onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})}
+/>
+```
+**Single Source**: State = form value truth; `name` attribute enables dynamic updates.
+
+</details>
+
+<details>
+<summary>KOR (한국어 버전)</summary>
+
+## **React: Props, State, 이벤트 & 폼**
+
+**Props & 조합**
+- **기본값**: `{name = "Guest"}` 매개변수 구조분해.
+- **children**: 태그 사이 콘텐츠 자동 수신 (레이아웃/카드).
+- **구조분해**: `function Profile({name, age})`.
+
+**useState 관리**
+```
+const [count, setCount] = useState(0);
+// Props: 읽기전용 (부모→자식)
+// State: 변경가능 (내부)
+```
+**부모 상태 패턴**: 부모 `setParentState`를 props로 자식 전달.
+
+**이벤트 처리**
+```
+<button onClick={handleClick}>클릭</button>    // 함수 참조
+<button onClick={() => handleClick('인자')}>  // 화살표 래퍼
+e.target.value, e.preventDefault()            // SyntheticEvent
+```
+
+**제어된 폼**
+```
+const [formData, setFormData] = useState({});
+<input 
+  name="email" 
+  value={formData.email} 
+  onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})}
+/>
+```
+**단일 진리원천**: 상태 = 폼 값; `name` 속성으로 동적 업데이트.
+
+</details>
