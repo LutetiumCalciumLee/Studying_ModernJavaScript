@@ -1,32 +1,75 @@
-## Dynamic List Rendering
-- **`map()` Function**: To render a list of items from an array, the standard JavaScript `map()` method is used directly within JSX. It iterates over each item in the data array and returns a new array of JSX elements, allowing you to transform data into a dynamic list of components.
-- **Syntax**: The `map()` function is typically embedded within curly braces `{}` in JSX. For each item in the array, you return a React element (like `<li>` or a custom component) that defines how that item should be displayed.
-    ```jsx
-    <ul>
-      {items.map(item => <li key={item.id}>{item.name}</li>)}
-    </ul>
-    ```
-- **Component Composition**: For more complex list items, it's a best practice to extract the item's rendering logic into a separate component. The `map()` function then renders an instance of this component for each item, passing the item's data as props.
+<details>
+<summary>ENG (English Version)</summary>
 
-## The `key` Prop
-- **Purpose**: The `key` prop is a special string attribute you need to include when creating lists of elements. It helps React identify which items have changed, been added, or been removed, which is crucial for efficient updates and state management within a list.
-- **Reconciliation**: Keys give each element a stable identity, allowing React's "reconciliation" algorithm to accurately track elements during re-renders. Without keys, React may rely on the array index, which can lead to performance issues and bugs with component state when the list is reordered, filtered, or items are added/removed.
-- **Choosing a Key**: A `key` must be unique among its siblings in the list. The best practice is to use a stable and unique identifier from your data, such as a database ID for each item. Using the array index as a key is discouraged if the order of items may change, as it can negatively impact performance and cause state-related issues.
+## **React: Props, State, Events & Forms**
 
-## Dynamic Filtering and UI
-- **`filter()` Function**: The JavaScript `filter()` method is used to create a new array containing only the elements that pass a certain condition. In React, this is commonly used to implement features like search or conditional rendering of a list based on user input or state.
-- **Implementation**: To create a dynamic search or filter feature, you can bind an input field's value to a state variable. Then, use the `filter()` method on your data array to show only the items that match the current state (e.g., the search term). The filtered array is then rendered using `map()`.
-- **Conditional Rendering**: You can combine list rendering with conditional logic. A common pattern is to check if the array has items before mapping over it. If the array is empty, you can render a fallback message like "No items found" instead of an empty list.
-    ```jsx
-    {items.length > 0 ? (
-      <ul>
-        {items.map(item => <li key={item.id}>{item.name}</li>)}
-      </ul>
-    ) : (
-      <p>There are no items to display.</p>
-    )}
-    ```
+**Props & Composition**
+- **defaultProps**: `{name = "Guest"}` destructuring in params.
+- **children**: `props.children` receives content between tags (layouts/cards).
+- **Destructuring**: `function Profile({name, age})` vs `props.name`.
 
-## Managing List State
-- **`useState` for Lists**: To create interactive lists where items can be added or removed, the list data should be stored in a state variable using the `useState` hook.
-- **Immutable Updates**: When modifying a list (e.g., adding or deleting an item), it is critical to treat the state as immutable. Instead of mutating the original array, you should create a new array and pass it to the state setter function. For adding, use the spread syntax (`[...oldArray, newItem]`). For removing, the `filter()` method is ideal (`oldArray.filter(item => item.id !== idToRemove)`).
+**useState Management**
+```
+const [count, setCount] = useState(0);
+// Props: read-only (parent → child)
+// State: mutable (internal component)
+```
+**Parent State Pattern**: Parent passes `setParentState` as prop to child.
+
+**Event Handling**
+```
+<button onClick={handleClick}>Click</button>  // Function reference
+<button onClick={() => handleClick('arg')}>  // Arrow wrapper
+e.target.value, e.preventDefault()           // SyntheticEvent
+```
+
+**Controlled Forms**
+```
+const [formData, setFormData] = useState({});
+<input 
+  name="email" 
+  value={formData.email} 
+  onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})}
+/>
+```
+**Single Source**: State = form value truth; `name` attribute enables dynamic updates.
+
+</details>
+
+<details>
+<summary>KOR (한국어 버전)</summary>
+
+## **React: Props, State, 이벤트 & 폼**
+
+**Props & 조합**
+- **기본값**: `{name = "Guest"}` 매개변수 구조분해.
+- **children**: 태그 사이 콘텐츠 자동 수신 (레이아웃/카드).
+- **구조분해**: `function Profile({name, age})`.
+
+**useState 관리**
+```
+const [count, setCount] = useState(0);
+// Props: 읽기전용 (부모→자식)
+// State: 변경가능 (내부)
+```
+**부모 상태 패턴**: 부모 `setParentState`를 props로 자식 전달.
+
+**이벤트 처리**
+```
+<button onClick={handleClick}>클릭</button>    // 함수 참조
+<button onClick={() => handleClick('인자')}>  // 화살표 래퍼
+e.target.value, e.preventDefault()            // SyntheticEvent
+```
+
+**제어된 폼**
+```
+const [formData, setFormData] = useState({});
+<input 
+  name="email" 
+  value={formData.email} 
+  onChange={(e) => setFormData({...formData, [e.target.name]: e.target.value})}
+/>
+```
+**단일 진리원천**: 상태 = 폼 값; `name` 속성으로 동적 업데이트.
+
+</details>
