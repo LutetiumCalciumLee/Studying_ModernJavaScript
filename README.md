@@ -1,217 +1,103 @@
-## Context and Custom Hooks
+<details>
+<summary>ENG (English Version)</summary>
 
+## **React Context & Custom Hooks**
 
-### Hook Usage Rules
+**Hook Rules** (Strict)
+- Top-level only (no loops/conditions/nested functions)
+- Same order every render
 
-React hooks must follow strict calling conventions:
-
-- Hooks must be called at the **top level** of function components only
-- They must be called in the **same order** every time the component renders
-- **Never call hooks inside conditions, loops, or nested functions**
-
-Violating these rules causes unpredictable behavior since React tracks hooks by their call order, not by identity.
-
-### Custom Hooks
-
-**Custom hooks** are reusable functions that encapsulate state management and side effects logic. They allow developers to extract complex component logic into shareable packages.
-
-Naming convention: Custom hooks must start with the `use` prefix (e.g., `useFetchData`, `useWindowSize`, `useToggle`).
-
-#### Example 1: useToggle Hook
-
-The useToggle hook encapsulates toggling functionality (open/close, show/hide) that appears in multiple components. Without it, the toggle logic gets duplicated:
-
-**Problem (Code Duplication):**
-
-```javascript
-// ModalButton.js
-function ModalButton() {
-  const [isOpen, setIsOpen] = useState(false);
-  const toggle = () => setIsOpen(prev => !prev);
-  // ...
-}
-
-// DropdownMenu.js
-function DropdownMenu() {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const toggle = () => setIsExpanded(prev => !prev);
-  // ...
-}
+**Custom Hooks** (`use` prefix)
 ```
-
-**Solution (Custom Hook):**
-
-```javascript
-// useToggle.js
-const useToggle = (initialValue = false) => {
-  const [value, setValue] = useState(initialValue);
+const useToggle = (initial = false) => {
+  const [value, setValue] = useState(initial);
   const toggle = () => setValue(prev => !prev);
   return [value, toggle];
 };
+// Usage: const [isOpen, toggle] = useToggle(false);
 ```
 
-Both components now simply call `const [isOpen, toggleModal] = useToggle(false)`, eliminating duplication and simplifying maintenance.
-
-#### Example 2: useWindowSize Hook
-
-This hook encapsulates **window resize event subscription**. It manages:
-
-1. Window width and height state
-2. Event listener registration on component mount
-3. Event listener cleanup to prevent memory leaks
-
-```javascript
+**useWindowSize Example**
+```jsx
 const useWindowSize = () => {
-  const [windowSize, setWindowSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
-
+  const [size, setSize] = useState({width: window.innerWidth, height: window.innerHeight});
   useEffect(() => {
-    const handleResize = () => {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    };
-    
+    const handleResize = () => setSize({width: window.innerWidth, height: window.innerHeight});
     window.addEventListener('resize', handleResize);
-    
-    return () => {
-      window.removeEventListener('resize', handleResize); // Cleanup
-    };
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
-
-  return windowSize;
+  return size;
 };
 ```
 
-This hook enables responsive design. Components can conditionally render based on screen size:
-
-```javascript
-function MobileWarning() {
-  const { width } = useWindowSize();
-  const isMobile = width < 768;
-  
-  return (
-    <div>
-      {isMobile ? (
-        <p>Mobile environment!</p>
-      ) : (
-        <p>Desktop environment.</p>
-      )}
-    </div>
-  );
-}
+**Context API** (No Props Drilling)
+```
+1. Create: const ThemeContext = createContext()
+2. Provider: <ThemeContext.Provider value={{theme, setTheme}}>
+3. Consumer: const {theme} = useContext(ThemeContext)
 ```
 
-### Context API: Solving Props Drilling
-
-**Props drilling** occurs when data passes through many intermediate components that don't use it, only to reach deeply nested components. This bloats code and hurts maintainability.
-
-**Example of Props Drilling:**
-
-```javascript
-function App() {
-  return <Toolbar theme="dark" />;
-}
-
-function Toolbar(props) {
-  return <ThemedButton theme={props.theme} />; // Just passing through
-}
-
-function ThemedButton(props) {
-  return <Button theme={props.theme} />; // Just passing through
-}
-
-function Button(props) {
-  return <button style={{ color: props.theme === 'dark' ? 'white' : 'black' }}>;
-}
-```
-
-The `theme` prop unnecessarily passes through `Toolbar` and `ThemedButton`.
-
-### Context Solution
-
-**Context** provides a centralized storage system where any component can access data without prop passing. It consists of three parts:
-
-#### 1. Create Context
-
-```javascript
-import { createContext } from 'react';
-export const ThemeContext = createContext('light'); // Default value
-```
-
-#### 2. Provider (Data Supplier)
-
-The Provider wraps components and supplies the context value:
-
-```javascript
-function ContextApp() {
-  const [theme, setTheme] = useState('light');
-
-  return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
-      <Button /> {/* Button can now access theme without props */}
-    </ThemeContext.Provider>
-  );
-}
-```
-
-#### 3. Consumer (Data Getter)
-
-Components access context data using the `useContext` hook:
-
-```javascript
-function Button() {
-  const { theme, setTheme } = useContext(ThemeContext);
-  
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
-  };
-
-  return (
-    <button onClick={toggleTheme}>
-      Theme: {theme.toUpperCase()}
-    </button>
-  );
-}
-```
-
-### Custom Hook for Context (Best Practice)
-
-Wrapping `useContext` in a custom hook improves safety and usability:
-
-```javascript
+**Custom Context Hook** (Best Practice)
+```jsx
 export const useTheme = () => {
   const context = useContext(ThemeContext);
-  
-  if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider');
-  }
-  
+  if (!context) throw new Error('useTheme must be within ThemeProvider');
   return context;
 };
 ```
 
-Components then simply call `const { theme, setTheme } = useTheme()`, eliminating the need to import the context object directly.
+**Use Cases**: Theme, auth, language, global config.
 
-### Common Context Use Cases
+</details>
 
-Context works best for **global, infrequently-changing** data like:
+<details>
+<summary>KOR (한국어 버전)</summary>
 
-- Theme settings (dark/light mode)
-- User authentication (logged-in user, permissions)
-- Language settings
-- Application-wide configuration
+## **React Context & 커스텀 훅**
 
-### Practical Example: Theme and Font Size Manager
+**훅 규칙** (엄격)
+- 최상위 호출만 (반복문/조건/중첩함수 금지)
+- 매 렌더링 동일 순서
 
-The document includes a practice project combining Context and Custom Hooks to build a settings application with:
+**커스텀 훅** (`use` 접두사)
+```
+const useToggle = (initial = false) => {
+  const [value, setValue] = useState(initial);
+  const toggle = () => setValue(prev => !prev);
+  return [value, toggle];
+};
+// 사용: const [isOpen, toggle] = useToggle(false);
+```
 
-- **SettingsContext**: Manages global theme and font size state
-- **useSettings Hook**: Custom hook for easy context access
-- **Header Component**: Contains theme toggle and font size controls
-- **Content Component**: Applies theme and font size styling
-- **App Component**: Acts as the Provider
+**useWindowSize 예제**
+```jsx
+const useWindowSize = () => {
+  const [size, setSize] = useState({width: window.innerWidth, height: window.innerHeight});
+  useEffect(() => {
+    const handleResize = () => setSize({width: window.innerWidth, height: window.innerHeight});
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  return size;
+};
+```
 
+**Context API** (Props Drilling 해결)
+```
+1. 생성: const ThemeContext = createContext()
+2. Provider: <ThemeContext.Provider value={{theme, setTheme}}>
+3. Consumer: const {theme} = useContext(ThemeContext)
+```
+
+**컨텍스트 커스텀 훅** (최선 실무)
+```jsx
+export const useTheme = () => {
+  const context = useContext(ThemeContext);
+  if (!context) throw new Error('useTheme must be within ThemeProvider');
+  return context;
+};
+```
+
+**용도**: 테마, 인증, 언어, 전역 설정.
+
+</details>
